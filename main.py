@@ -15,16 +15,17 @@ from create_data import create_base
 
 
 def create_app(config_object: Config) -> Flask:
-    application = Flask(__name__)
-    application.config.from_object(config_object)
-    application.app_context().push()
-    return application
+    app = Flask(__name__)
+    app.config.from_object(config_object)
+    app.app_context().push()
+    register_extensions(app)
+    return app
 
 
 # функция подключения расширений (Flask-SQLAlchemy, Flask-RESTx, ...)
-def register_extensions(application: Flask):
-    db.init_app(application)
-    api = Api(application)
+def register_extensions(app: Flask):
+    db.init_app(app)
+    api = Api(app)
     api.add_namespace(movie_ns)
     api.add_namespace(director_ns)
     api.add_namespace(genre_ns)
@@ -34,5 +35,4 @@ def register_extensions(application: Flask):
 if __name__ == '__main__':
     app_config = Config()
     app = create_app(app_config)
-    register_extensions(app)
     app.run()
